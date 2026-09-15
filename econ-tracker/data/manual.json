@@ -1,0 +1,12 @@
+{
+  "_readme": "Edit this file by hand whenever you check a new PMI reading (usually released the 1st–5th of each month). Values you last gave me are pre-filled as a starting point — update the 'value' and 'period' fields when new numbers come out. Source suggestion: your local S&P Global press release, or check tradingeconomics.com manually and copy the number across (that's allowed — you're just not scripting requests to their site).",
+
+  "united_states":   { "manufacturing_pmi": {"value": 53.9, "period": "Aug 2026"}, "services_pmi": {"value": 56.5, "period": "Aug 2026"}, "business_confidence": {"value": 54.6, "period": "Aug 2026"} },
+  "united_kingdom":  { "manufacturing_pmi": {"value": 51.7, "period": "Aug 2026"}, "services_pmi": {"value": 52.5, "period": "Aug 2026"} },
+  "australia":       { "manufacturing_pmi": {"value": 52.0, "period": "Aug 2026"}, "services_pmi": {"value": 53.2, "period": "Aug 2026"} },
+  "switzerland":      { "manufacturing_pmi": {"value": 57.1, "period": "Aug 2026"}, "services_pmi": {"value": 58.3, "period": "Aug 2026"}, "business_confidence": {"value": 107, "period": "Aug 2026", "note": "KOF Barometer"} },
+  "new_zealand":     { "manufacturing_pmi": {"value": 54.3, "period": "Jul 2026"}, "services_pmi": {"value": 50.6, "period": "Jul 2026"}, "business_confidence": {"value": 53.7, "period": "Aug 2026"} },
+  "japan":           { "manufacturing_pmi": {"value": 54.9, "period": "Aug 2026"}, "services_pmi": {"value": 52.5, "period": "Aug 2026"} },
+  "canada":          { "manufacturing_pmi": {"value": 53.0, "period": "Aug 2026"}, "services_pmi": {"value": 46.8, "period": "Aug 2026"}, "business_confidence": {"value": 64.3, "period": "Aug 2026"} },
+  "euro_area":       { "manufacturing_pmi": {"value": 52.7, "period": "Aug 2026"}, "services_pmi": {"value": 51.6, "period": "Aug 2026"} }
+}

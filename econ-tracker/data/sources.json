@@ -1,0 +1,91 @@
+{
+  "_readme": "Each entry describes ONE series to fetch. type is 'fred' (needs a FRED series id), 'oecd' (needs a full SDMX query URL), or 'manual' (you edit data/manual.json by hand — used for PMI, which has no free source). For 'oecd' entries marked FILL_ME, see HOW_TO_FILL_OECD_URLS.md for how to get the exact URL in about 2 minutes from the OECD Data Explorer.",
+
+  "united_states": {
+    "flag": "🇺🇸",
+    "inflation":  { "type": "fred", "series": "CPIAUCSL", "transform": "yoy_pct" },
+    "gdp_growth": { "type": "fred", "series": "A191RL1Q225SBEA", "transform": "level" },
+    "unemployment": { "type": "fred", "series": "UNRATE", "transform": "level" },
+    "business_confidence": { "type": "manual", "note": "No free real-time US series with FRED coverage as clean as NFIB/ISM (both licensed). Consider Philly Fed or NY Fed Empire State survey as a free proxy — fill manually or swap in your own FRED series id here." },
+    "consumer_confidence": { "type": "fred", "series": "UMCSENT", "transform": "level" },
+    "manufacturing_pmi": { "type": "manual" },
+    "services_pmi": { "type": "manual" }
+  },
+
+  "united_kingdom": {
+    "flag": "🇬🇧",
+    "inflation":  { "type": "oecd", "url": "FILL_ME" },
+    "gdp_growth": { "type": "oecd", "url": "FILL_ME" },
+    "unemployment": { "type": "oecd", "url": "FILL_ME" },
+    "business_confidence": { "type": "oecd", "url": "FILL_ME" },
+    "consumer_confidence": { "type": "oecd", "url": "FILL_ME" },
+    "manufacturing_pmi": { "type": "manual" },
+    "services_pmi": { "type": "manual" }
+  },
+
+  "australia": {
+    "flag": "🇦🇺",
+    "inflation":  { "type": "oecd", "url": "FILL_ME" },
+    "gdp_growth": { "type": "oecd", "url": "FILL_ME" },
+    "unemployment": { "type": "oecd", "url": "FILL_ME" },
+    "business_confidence": { "type": "oecd", "url": "FILL_ME" },
+    "consumer_confidence": { "type": "oecd", "url": "FILL_ME" },
+    "manufacturing_pmi": { "type": "manual" },
+    "services_pmi": { "type": "manual" }
+  },
+
+  "switzerland": {
+    "flag": "🇨🇭",
+    "inflation":  { "type": "oecd", "url": "FILL_ME" },
+    "gdp_growth": { "type": "oecd", "url": "FILL_ME" },
+    "unemployment": { "type": "oecd", "url": "FILL_ME" },
+    "business_confidence": { "type": "manual", "note": "Switzerland's headline gauge is the KOF Barometer, not OECD BCI. KOF publishes free data at kof.ethz.ch — worth wiring up directly if you want this automated; manual for now." },
+    "consumer_confidence": { "type": "oecd", "url": "FILL_ME" },
+    "manufacturing_pmi": { "type": "manual" },
+    "services_pmi": { "type": "manual" }
+  },
+
+  "new_zealand": {
+    "flag": "🇳🇿",
+    "inflation":  { "type": "oecd", "url": "FILL_ME" },
+    "gdp_growth": { "type": "oecd", "url": "FILL_ME" },
+    "unemployment": { "type": "oecd", "url": "FILL_ME" },
+    "business_confidence": { "type": "manual", "note": "NZ's headline gauge (ANZ Business Outlook) is a private survey, not free/API-accessible. Manual entry." },
+    "consumer_confidence": { "type": "oecd", "url": "FILL_ME" },
+    "manufacturing_pmi": { "type": "manual" },
+    "services_pmi": { "type": "manual" }
+  },
+
+  "japan": {
+    "flag": "🇯🇵",
+    "inflation":  { "type": "oecd", "url": "FILL_ME" },
+    "gdp_growth": { "type": "oecd", "url": "FILL_ME" },
+    "unemployment": { "type": "oecd", "url": "FILL_ME" },
+    "business_confidence": { "type": "oecd", "url": "FILL_ME" },
+    "consumer_confidence": { "type": "oecd", "url": "FILL_ME" },
+    "manufacturing_pmi": { "type": "manual" },
+    "services_pmi": { "type": "manual" }
+  },
+
+  "canada": {
+    "flag": "🇨🇦",
+    "inflation":  { "type": "oecd", "url": "FILL_ME" },
+    "gdp_growth": { "type": "oecd", "url": "FILL_ME" },
+    "unemployment": { "type": "oecd", "url": "FILL_ME" },
+    "business_confidence": { "type": "manual", "note": "Canada's headline gauge (BOC Business Outlook Survey) isn't in a simple free API. Manual, or wire up Bank of Canada's Valet API (free, official) if you want it automated." },
+    "consumer_confidence": { "type": "oecd", "url": "FILL_ME" },
+    "manufacturing_pmi": { "type": "manual" },
+    "services_pmi": { "type": "manual" }
+  },
+
+  "euro_area": {
+    "flag": "🇪🇺",
+    "inflation":  { "type": "oecd", "url": "FILL_ME" },
+    "gdp_growth": { "type": "oecd", "url": "FILL_ME" },
+    "unemployment": { "type": "oecd", "url": "FILL_ME" },
+    "business_confidence": { "type": "oecd", "url": "FILL_ME" },
+    "consumer_confidence": { "type": "oecd", "url": "FILL_ME" },
+    "manufacturing_pmi": { "type": "manual" },
+    "services_pmi": { "type": "manual" }
+  }
+}

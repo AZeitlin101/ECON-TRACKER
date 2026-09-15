@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Global Macro Board</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+  :root{
+    --bg: #0e1210; --panel: #141915; --panel-line: #262f27;
+    --ink: #e7e4da; --ink-dim: #8d9689; --ink-faint: #5b6459;
+    --up: #7fb08a; --down: #c17a5c; --amber: #cfa15e; --rule: #232b25;
+  }
+  *{ box-sizing: border-box; }
+  html,body{ margin:0; padding:0; background:var(--bg); }
+  body{ font-family: 'IBM Plex Mono', monospace; color: var(--ink); -webkit-font-smoothing: antialiased; }
+  .wrap{ max-width: 1180px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  header{ display:flex; justify-content:space-between; align-items:flex-end; border-bottom: 1px solid var(--rule); padding-bottom: 22px; margin-bottom: 28px; flex-wrap: wrap; gap: 16px; }
+  .title-block h1{ font-family: 'Fraunces', serif; font-weight: 500; font-size: 34px; letter-spacing: -0.01em; margin: 0 0 6px 0; }
+  .title-block p{ margin:0; color: var(--ink-dim); font-size: 13px; line-height: 1.5; max-width: 480px; }
+  .asof{ text-align: right; font-size: 12px; color: var(--ink-faint); line-height: 1.7; }
+  .asof b{ color: var(--ink-dim); font-weight: 500; }
+
+  .board{ border: 1px solid var(--panel-line); border-radius: 4px; overflow: hidden; background: var(--panel); }
+  table{ width:100%; border-collapse: collapse; }
+  thead th{ text-align: left; font-weight: 500; font-size: 11px; color: var(--ink-faint); letter-spacing: 0.02em; padding: 12px 16px; border-bottom: 1px solid var(--panel-line); white-space: nowrap; cursor: pointer; user-select:none; }
+  thead th:hover{ color: var(--ink-dim); }
+  tbody tr{ border-bottom: 1px solid var(--rule); }
+  tbody tr:last-child{ border-bottom: none; }
+  tbody tr:hover{ background: rgba(255,255,255,0.015); }
+  td{ padding: 13px 16px; font-size: 13px; vertical-align: middle; }
+  .country-cell{ display:flex; align-items:center; gap:10px; min-width: 165px; }
+  .flag{ font-size: 17px; line-height:1; }
+  .country-name{ font-family: 'Fraunces', serif; font-size: 15px; }
+  .val-cell{ text-align: right; }
+  .val{ font-size: 14px; font-weight: 500; }
+  .val.na{ color: var(--ink-faint); font-style: italic; font-size: 12px; }
+  .period{ display:block; font-size: 10px; color: var(--ink-faint); margin-top: 2px; }
+  .src-tag{ display:inline-block; font-size: 8px; letter-spacing:0.05em; color: var(--ink-faint); border: 1px solid var(--panel-line); border-radius: 2px; padding: 1px 4px; margin-top: 3px; }
+
+  footer{ margin-top: 30px; padding-top: 18px; border-top: 1px solid var(--rule); font-size: 11.5px; color: var(--ink-faint); line-height: 1.7; }
+  footer b{ color: var(--ink-dim); font-weight: 500; }
+
+  .loading, .err{ padding: 60px 20px; text-align:center; color: var(--ink-faint); font-size: 13px; }
+  .err{ color: var(--down); }
+
+  @media (max-width: 720px){ .board{ overflow-x: auto; } table{ min-width: 760px; } header{ flex-direction: column; align-items: flex-start; } .asof{ text-align:left; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="title-block">
+      <h1>Global Macro Board</h1>
+      <p>Inflation, growth, sentiment and labour-market readings for eight major economies, pulled from FRED, the OECD, and manual PMI entries.</p>
+    </div>
+    <div class="asof" id="asof">Loading…</div>
+  </header>
+
+  <div id="content" class="loading">Loading indicators.json…</div>
+
+  <footer>
+    <b>Reading this board —</b> US figures come from FRED, other economies from the OECD's SDMX API, both official and free. PMI has no free source and is updated by hand monthly. Business/Consumer Confidence use different scales per country — compare each country's own trend rather than the raw number across countries.
+  </footer>
+</div>
+
+<script>
+const COUNTRY_NAMES = {
+  united_states: "United States", united_kingdom: "United Kingdom", australia: "Australia",
+  switzerland: "Switzerland", new_zealand: "New Zealand", japan: "Japan",
+  canada: "Canada", euro_area: "Euro Area"
+};
+const METRICS = [
+  { key:'inflation', label:'Inflation' },
+  { key:'gdp_growth', label:'GDP Growth' },
+  { key:'business_confidence', label:'Business Conf.' },
+  { key:'manufacturing_pmi', label:'Manufacturing PMI' },
+  { key:'services_pmi', label:'Services PMI' },
+  { key:'unemployment', label:'Unemployment' },
+  { key:'consumer_confidence', label:'Consumer Conf.' },
+];
+
+async function load(){
+  try{
+    const res = await fetch('../data/indicators.json', { cache: 'no-store' });
+    if(!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    render(data);
+  }catch(e){
+    document.getElementById('content').innerHTML =
+      `<div class="err">Couldn't load data/indicators.json (${e.message}).<br>Run fetch_indicators.py at least once, or check the path if you're previewing this file directly from disk.</div>`;
+    document.getElementById('asof').textContent = '';
+  }
+}
+
+function render(data){
+  document.getElementById('asof').innerHTML =
+    `<div><b>Last updated</b> ${new Date(data._generated_at).toLocaleString()}</div><div>Sources: FRED · OECD · manual</div>`;
+
+  const table = document.createElement('table');
+  const thead = document.createElement('thead');
+  const headRow = document.createElement('tr');
+  headRow.innerHTML = '<th>Economy</th>' + METRICS.map(m=>`<th>${m.label}</th>`).join('');
+  thead.appendChild(headRow);
+  table.appendChild(thead);
+
+  const tbody = document.createElement('tbody');
+  Object.entries(data.countries).forEach(([key, c])=>{
+    const tr = document.createElement('tr');
+    let row = `<td><div class="country-cell"><span class="flag">${c.flag||''}</span><span class="country-name">${COUNTRY_NAMES[key]||key}</span></div></td>`;
+    METRICS.forEach(m=>{
+      const metric = c.metrics[m.key];
+      if(!metric || metric.value === null || metric.value === undefined){
+        row += `<td class="val-cell"><span class="val na">not set</span></td>`;
+      } else {
+        row += `<td class="val-cell">
+          <span class="val">${metric.value}</span>
+          <span class="period">${metric.period||''}</span>
+          <span class="src-tag">${metric.source||''}</span>
+        </td>`;
+      }
+    });
+    tr.innerHTML = row;
+    tbody.appendChild(tr);
+  });
+  table.appendChild(tbody);
+
+  const board = document.createElement('div');
+  board.className = 'board';
+  board.appendChild(table);
+
+  const content = document.getElementById('content');
+  content.className = '';
+  content.innerHTML = '';
+  content.appendChild(board);
+}
+
+load();
+</script>
+</body>
+</html>
